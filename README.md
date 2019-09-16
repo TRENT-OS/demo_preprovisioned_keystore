@@ -1,4 +1,4 @@
-# keystore_demo_app
+# pre_provisioned_keystore
 
 Demo application that showcases the seos_key_store functionalities with a pre-provisioned image.
 The image is prepared using the keystore_provisioning_tool which outputs the binary image used by this demo. 
