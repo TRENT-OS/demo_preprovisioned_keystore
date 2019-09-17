@@ -1,10 +1,11 @@
 /**
- * @addtogroup PreprovisioningKeyStore_Demo_App
+ * @addtogroup PreprovisioninedKeyStore_Demo_App
  * @{
  *
  * @file demoApp.c
  *
- * @brief demo application that showcases the key store functionalities
+ * @brief demo application that showcases the key store functionalities 
+ * by using a pre-created keystore image that contains 2 keys
  *
  * Copyright (C) 2019, Hensoldt Cyber GmbH
  */
@@ -59,7 +60,7 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi, SeosKeyStoreCtx* keyStoreApi
  *                                                  \n 2) Use one key to encrypt the sample string
  *                                                  \n 3) Use the other key to decrypt the previously encrypted string
  *                                                  \n 4) Verify that the decrypted string is equal to the initial one
- *                                                  \n 5) Delete the both
+ *                                                  \n 5) Delete both keys
  * @}
  */
 
