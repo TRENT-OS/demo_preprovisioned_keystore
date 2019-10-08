@@ -10,6 +10,16 @@ seos_use_libs(
     SPIFFS
 )
 
+# this is used by the keystore to decide which files are build into the lib. It
+# works because this is not simply a variable, but a configuration variable
+# that is preserved after it got defined. The current build process runs the
+# cmake config multiple times. This is set in the first run after the keystore
+# config was done, so in the 2nd cmake config run the new keystore config is
+# used then. A cleaner that does not require multiple config runs is having
+# multiple keystore libs, the the component here as to pick what is needed. Or
+# even make them interface libs that contribute C-file here.
+set(KEYSTORE_AS_COMPONENT ON CACHE BOOL "" FORCE)
+
 project(tests_keystore_demo C)
 
 DeclareCAmkESComponent(DemoApp
