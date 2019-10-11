@@ -4,7 +4,7 @@
  *
  * @file demoApp.c
  *
- * @brief demo application that showcases the key store functionalities 
+ * @brief demo application that showcases the key store functionalities
  * by using a pre-created keystore image that contains 2 keys
  *
  * Copyright (C) 2019, Hensoldt Cyber GmbH
@@ -36,14 +36,15 @@
 #define SAMPLE_STRING   "0123456789ABCDEF"
 
 /* Private functions prototypes ----------------------------------------------*/
-static seos_err_t runDemo(SeosCryptoCtx* cryptoApi, SeosKeyStoreCtx* keyStoreApi);
+static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
+                          SeosKeyStoreCtx* keyStoreApi);
 
 /**
  * @weakgroup KeyStorePreprovisioningDemo
  * @{
- * 
- * @brief Top level preprovisioning demo that tries to fetch 
- * pre-provisioned keys from the keystore (assuming they are there) 
+ *
+ * @brief Top level preprovisioning demo that tries to fetch
+ * pre-provisioned keys from the keystore (assuming they are there)
  * and verifies their validity by importing them back in the crypto api
  *
  * @test \b KeyStorePreprovisioningDemo     \n 1) Fetch AESKeyImported and import it to the crypto api
@@ -79,7 +80,7 @@ int run()
     }
 
     /***************************** Destruction *******************************/
-    SeosCryptoClient_deInit(&cryptoApi.parent);
+    SeosCryptoClient_free(&cryptoApi.parent);
     SeosKeyStoreClient_deInit(&keyStoreApi.parent);
 
     Debug_LOG_INFO("\n\nPreprovisioning keystore demo succeeded!\n");
@@ -88,7 +89,8 @@ int run()
 }
 
 /* Private functions -----------------------------------------------------------*/
-static seos_err_t runDemo(SeosCryptoCtx* cryptoApi, SeosKeyStoreCtx* keyStoreApi)
+static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
+                          SeosKeyStoreCtx* keyStoreApi)
 {
     seos_err_t err = SEOS_ERROR_CONNECTION_CLOSED;
 
@@ -107,74 +109,98 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi, SeosKeyStoreCtx* keyStoreApi
     pKey = &aesKey;
 
     err = SeosKeyStoreApi_getKey(keyStoreApi, AES_KEY1_NAME, pKey, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosKeyStoreApi_getKey failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_AES, SeosCryptoKey_Flags_EXPORTABLE_RAW, aesKey.len * 8);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyInit failed with err %d", err);
+    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_AES,
+                                SeosCryptoKey_Flags_EXPORTABLE_RAW, aesKey.len * 8);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyInit failed with err %d", err);
 
     err = SeosCryptoApi_keyImport(cryptoApi, keyHandle, NULL, pKey, keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyImport failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyImport failed with err %d", err);
 
     /***************************** AES key 2 *******************************/
     pKey = &aesKey;
 
     err = SeosKeyStoreApi_getKey(keyStoreApi, AES_KEY1_NAME, pKey, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosKeyStoreApi_getKey failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_AES, SeosCryptoKey_Flags_EXPORTABLE_RAW, aesKey.len * 8);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyInit failed with err %d", err);
+    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_AES,
+                                SeosCryptoKey_Flags_EXPORTABLE_RAW, aesKey.len * 8);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyInit failed with err %d", err);
 
     err = SeosCryptoApi_keyImport(cryptoApi, keyHandle, NULL, pKey, keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyImport failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyImport failed with err %d", err);
 
     /***************************** RSA private key *******************************/
     pKey = &rsaPrvKey;
 
     err = SeosKeyStoreApi_getKey(keyStoreApi, RSA_PRV_KEY_NAME, pKey, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosKeyStoreApi_getKey failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_RSA_PRV, SeosCryptoKey_Flags_EXPORTABLE_RAW, rsaPrvKey.nLen * 8);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyInit failed with err %d", err);
+    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_RSA_PRV,
+                                SeosCryptoKey_Flags_EXPORTABLE_RAW, (rsaPrvKey.pLen + rsaPrvKey.qLen) * 8);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyInit failed with err %d", err);
 
     err = SeosCryptoApi_keyImport(cryptoApi, keyHandle, NULL, pKey, keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyImport failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyImport failed with err %d", err);
 
     /***************************** RSA public key *******************************/
     pKey = &rsaPubKey;
 
     err = SeosKeyStoreApi_getKey(keyStoreApi, RSA_PUB_KEY_NAME, pKey, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosKeyStoreApi_getKey failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_RSA_PUB, SeosCryptoKey_Flags_EXPORTABLE_RAW, rsaPubKey.nLen * 8);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyInit failed with err %d", err);
+    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_RSA_PUB,
+                                SeosCryptoKey_Flags_EXPORTABLE_RAW, rsaPubKey.nLen * 8);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyInit failed with err %d", err);
 
     err = SeosCryptoApi_keyImport(cryptoApi, keyHandle, NULL, pKey, keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyImport failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyImport failed with err %d", err);
 
     /***************************** DH private key *******************************/
     pKey = &dhPrvKey;
 
     err = SeosKeyStoreApi_getKey(keyStoreApi, DH_PRV_KEY_NAME, pKey, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosKeyStoreApi_getKey failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_DH_PRV, SeosCryptoKey_Flags_EXPORTABLE_RAW, dhPrvKey.pLen * 8);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyInit failed with err %d", err);
+    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_DH_PRV,
+                                SeosCryptoKey_Flags_EXPORTABLE_RAW, dhPrvKey.pLen * 8);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyInit failed with err %d", err);
 
     err = SeosCryptoApi_keyImport(cryptoApi, keyHandle, NULL, pKey, keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyImport failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyImport failed with err %d", err);
 
     /***************************** DH public key *******************************/
     pKey = &dhPubKey;
 
     err = SeosKeyStoreApi_getKey(keyStoreApi, DH_PUB_KEY_NAME, pKey, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosKeyStoreApi_getKey failed with err %d", err);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_DH_PUB, SeosCryptoKey_Flags_EXPORTABLE_RAW, dhPubKey.pLen * 8);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyInit failed with err %d", err);
+    err = SeosCryptoApi_keyInit(cryptoApi, &keyHandle, SeosCryptoKey_Type_DH_PUB,
+                                SeosCryptoKey_Flags_EXPORTABLE_RAW, dhPubKey.pLen * 8);
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyInit failed with err %d", err);
 
     err = SeosCryptoApi_keyImport(cryptoApi, keyHandle, NULL, pKey, keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS, "SeosCryptoApi_keyImport failed with err %d", err);
-    
+    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+                          "SeosCryptoApi_keyImport failed with err %d", err);
+
     return SEOS_SUCCESS;
 }
 
