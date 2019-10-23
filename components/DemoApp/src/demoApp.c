@@ -35,6 +35,9 @@
 //Sample encryption/decryption data
 #define SAMPLE_STRING   "0123456789ABCDEF"
 
+/* Static variables------------------------------------------------------------*/
+static SeosCryptoKey_Data keyData;
+
 /* Private functions prototypes ----------------------------------------------*/
 static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           SeosKeyStoreCtx* keyStoreApi);
@@ -92,28 +95,17 @@ int run()
 static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           SeosKeyStoreCtx* keyStoreApi)
 {
-    seos_err_t err = SEOS_ERROR_CONNECTION_CLOSED;
-
+    seos_err_t err = SEOS_ERROR_GENERIC;
     SeosCrypto_KeyHandle keyHandle;
-
-    SeosCryptoKey_AES aesKey;
-    SeosCryptoKey_RSAPrv rsaPrvKey;
-    SeosCryptoKey_RSAPub rsaPubKey;
-    SeosCryptoKey_DHPrv dhPrvKey;
-    SeosCryptoKey_DHPub dhPubKey;
-
-    size_t keyLen = 0;
-    void* pKey = NULL;
+    size_t keyLen;
 
     /***************************** AES key 1 *******************************/
-    pKey = &aesKey;
-    err = SeosKeyStoreApi_getKey(keyStoreApi, AES_KEY1_NAME, pKey, &keyLen);
+    keyLen = sizeof(keyData);
+    err = SeosKeyStoreApi_getKey(keyStoreApi, AES_KEY1_NAME, &keyData, &keyLen);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL,
-                                  SeosCryptoKey_Type_AES,
-                                  SeosCryptoKey_Flags_EXPORTABLE_RAW, pKey, keyLen);
+    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_keyImport failed with err %d", err);
     err = SeosCryptoApi_keyFree(cryptoApi, keyHandle);
@@ -121,14 +113,12 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           "SeosCryptoApi_keyFree failed with err %d", err);
 
     /***************************** AES key 2 *******************************/
-    pKey = &aesKey;
-    err = SeosKeyStoreApi_getKey(keyStoreApi, AES_KEY1_NAME, pKey, &keyLen);
+    keyLen = sizeof(keyData);
+    err = SeosKeyStoreApi_getKey(keyStoreApi, AES_KEY1_NAME, &keyData, &keyLen);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL,
-                                  SeosCryptoKey_Type_AES,
-                                  SeosCryptoKey_Flags_EXPORTABLE_RAW, pKey, keyLen);
+    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_keyImport failed with err %d", err);
     err = SeosCryptoApi_keyFree(cryptoApi, keyHandle);
@@ -136,14 +126,12 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           "SeosCryptoApi_keyFree failed with err %d", err);
 
     /***************************** RSA private key *******************************/
-    pKey = &rsaPrvKey;
-    err = SeosKeyStoreApi_getKey(keyStoreApi, RSA_PRV_KEY_NAME, pKey, &keyLen);
+    keyLen = sizeof(keyData);
+    err = SeosKeyStoreApi_getKey(keyStoreApi, RSA_PRV_KEY_NAME, &keyData, &keyLen);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL,
-                                  SeosCryptoKey_Type_RSA_PRV,
-                                  SeosCryptoKey_Flags_EXPORTABLE_RAW, pKey, keyLen);
+    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_keyImport failed with err %d", err);
     err = SeosCryptoApi_keyFree(cryptoApi, keyHandle);
@@ -151,14 +139,12 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           "SeosCryptoApi_keyFree failed with err %d", err);
 
     /***************************** RSA public key *******************************/
-    pKey = &rsaPubKey;
-    err = SeosKeyStoreApi_getKey(keyStoreApi, RSA_PUB_KEY_NAME, pKey, &keyLen);
+    keyLen = sizeof(keyData);
+    err = SeosKeyStoreApi_getKey(keyStoreApi, RSA_PUB_KEY_NAME, &keyData, &keyLen);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL,
-                                  SeosCryptoKey_Type_RSA_PUB,
-                                  SeosCryptoKey_Flags_EXPORTABLE_RAW, pKey, keyLen);
+    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_keyImport failed with err %d", err);
     err = SeosCryptoApi_keyFree(cryptoApi, keyHandle);
@@ -166,14 +152,12 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           "SeosCryptoApi_keyFree failed with err %d", err);
 
     /***************************** DH private key *******************************/
-    pKey = &dhPrvKey;
-    err = SeosKeyStoreApi_getKey(keyStoreApi, DH_PRV_KEY_NAME, pKey, &keyLen);
+    keyLen = sizeof(keyData);
+    err = SeosKeyStoreApi_getKey(keyStoreApi, DH_PRV_KEY_NAME, &keyData, &keyLen);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL,
-                                  SeosCryptoKey_Type_DH_PRV,
-                                  SeosCryptoKey_Flags_EXPORTABLE_RAW, pKey, keyLen);
+    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_keyImport failed with err %d", err);
     err = SeosCryptoApi_keyFree(cryptoApi, keyHandle);
@@ -181,14 +165,12 @@ static seos_err_t runDemo(SeosCryptoCtx* cryptoApi,
                           "SeosCryptoApi_keyFree failed with err %d", err);
 
     /***************************** DH public key *******************************/
-    pKey = &dhPubKey;
-    err = SeosKeyStoreApi_getKey(keyStoreApi, DH_PUB_KEY_NAME, pKey, &keyLen);
+    keyLen = sizeof(keyData);
+    err = SeosKeyStoreApi_getKey(keyStoreApi, DH_PUB_KEY_NAME, &keyData, &keyLen);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosKeyStoreApi_getKey failed with err %d", err);
 
-    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL,
-                                  SeosCryptoKey_Type_DH_PUB,
-                                  SeosCryptoKey_Flags_EXPORTABLE_RAW, pKey, keyLen);
+    err = SeosCryptoApi_keyImport(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_keyImport failed with err %d", err);
     err = SeosCryptoApi_keyFree(cryptoApi, keyHandle);
