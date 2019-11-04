@@ -7,7 +7,7 @@ seos_use_libs(
     SEOS_CRYPTO
     SEOS_CRYPTO_IMPL_MBEDTLS
     SEOS_KEYSTORE
-    SEOS_FILESYSTEM_SPIFFS
+    SEOS_FILESYSTEM_SPIFFS_LEGACY
 )
 
 # this is used by the keystore to decide which files are build into the lib. It
@@ -32,7 +32,7 @@ DeclareCAmkESComponent(DemoApp
         -Wall -Werror
     LIBS
         seos_libs
-        seos_filesystem_spiffs
+        seos_filesystem_spiffs_legacy
         seos_crypto
         seos_keystore
 )
@@ -49,7 +49,7 @@ DeclareCAmkESComponent(CryptoServer
         -Wall -Werror
     LIBS
         seos_libs
-        seos_filesystem_spiffs
+        seos_filesystem_spiffs_legacy
         seos_crypto
         seos_keystore
 )
