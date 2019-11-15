@@ -31,6 +31,7 @@ DeclareCAmkESComponent(DemoApp
     C_FLAGS
         -Wall -Werror
     LIBS
+        seos_core_api
         seos_libs
         seos_filesystem_spiffs_legacy
         seos_crypto
@@ -48,6 +49,7 @@ DeclareCAmkESComponent(CryptoServer
     C_FLAGS
         -Wall -Werror
     LIBS
+        seos_core_api
         seos_libs
         seos_filesystem_spiffs_legacy
         seos_crypto
@@ -68,6 +70,7 @@ DeclareCAmkESComponent(ChanMux
     C_FLAGS
         -Wall -Werror
     LIBS
+        seos_core_api
         seos_libs
 )
 

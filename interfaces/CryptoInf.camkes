@@ -1,5 +1,5 @@
 procedure CryptoInf {
-    include "seos_err.h";
+    include "SeosError.h";
     include "SeosCryptoRpc.h";
 
     seos_err_t      getRpcHandle    (inout SeosCryptoRpc_Handle handle);
@@ -7,7 +7,7 @@ procedure CryptoInf {
 };
 
 procedure CryptoRpcInf {
-    include "seos_err.h";
+    include "SeosError.h";
     include "SeosCryptoRpc.h";
 
     seos_err_t      rngGetBytes     (in SeosCryptoRpc_Handle handle, in unsigned int flags, in size_t bufSize);
@@ -38,7 +38,7 @@ procedure CryptoRpcInf {
 };
 
 procedure KeyStoreInf {
-    include "seos_err.h";
+    include "SeosError.h";
     include "SeosKeyStoreRpc.h";
 
     seos_err_t      getRpcHandle    (inout SeosKeyStoreRpc_Handle handle);
@@ -46,7 +46,7 @@ procedure KeyStoreInf {
 };
 
 procedure KeyStoreRpcInf {
-    include "seos_err.h";
+    include "SeosError.h";
     include "SeosKeyStoreRpc.h";
 
     seos_err_t      importKey       (in SeosKeyStoreRpc_Handle handle, in size_t keySize);
