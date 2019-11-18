@@ -6,6 +6,7 @@
 
 #include "CryptoServer.h"
 #include "CryptoServerInit.h"
+#include "SeosCrypto.h"
 #include <camkes.h>
 
 static SeosCrypto    cryptoCore;
@@ -57,7 +58,7 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
 
     seos_err_t retval = SeosKeyStore_init(&keyStore,
                                           keyStoreCtx.fileStreamFactory,
-                                          &cryptoCore,
+                                          SeosCrypto_TO_SEOS_CRYPTO_CTX(&cryptoCore),
                                           "KEY_STORE");
 
     if (retval != SEOS_SUCCESS)
