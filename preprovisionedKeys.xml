@@ -9,9 +9,9 @@ KEY NAME:
     String representing key name
 
 KEY FLAGS:
-    SeosCryptoKey_Flags_NONE                = 0
-    SeosCryptoKey_Flags_EXPORTABLE_RAW      = 1
-    SeosCryptoKey_Flags_EXPORTABLE_WRAPPED  = 2
+    SeosCryptoApi_Key_FLAG_NONE                = 0
+    SeosCryptoApi_Key_FLAG_EXPORTABLE_RAW      = 1
+    SeosCryptoApi_Key_FLAG_EXPORTABLE_WRAPPED  = 2
 
 KEY LENGTH:
     Number in bits

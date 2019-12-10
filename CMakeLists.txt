@@ -44,7 +44,7 @@ DeclareCAmkESComponent(CryptoServer
     SOURCES
         components/CryptoServer/instance/CryptoServer.c
         components/CryptoServer/instance/CryptoServerInit.c
-        ${SEOS_LIBS_DIR}/seos_crypto/src/SeosCryptoRpc.c
+        ${SEOS_LIBS_DIR}/seos_crypto/src/SeosCryptoRpcServer.c
         ${SEOS_LIBS_DIR}/seos_keystore/src/SeosKeyStoreRpc.c
     C_FLAGS
         -Wall -Werror

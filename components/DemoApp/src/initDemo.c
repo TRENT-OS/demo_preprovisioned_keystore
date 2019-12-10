@@ -5,14 +5,16 @@
 
 #include "initDemo.h"
 
+#include "LibDebug/Debug.h"
+
 #include "camkes.h"
 
-seos_err_t initDemo(SeosCryptoClient* cryptoApi, SeosKeyStoreClient* keyStoreApi)
+seos_err_t initDemo(SeosCryptoRpcClient* cryptoApi, SeosKeyStoreClient* keyStoreApi)
 {
     seos_err_t err = SEOS_ERROR_GENERIC;
 
     /***************************** Init crypto *******************************/
-    SeosCryptoRpc_Handle cryptoRpcHandle = NULL;
+    SeosCryptoApi_RpcServer cryptoRpcHandle = NULL;
 
     err = Crypto_getRpcHandle(&cryptoRpcHandle);
     if (err != SEOS_SUCCESS)
@@ -22,10 +24,10 @@ seos_err_t initDemo(SeosCryptoClient* cryptoApi, SeosKeyStoreClient* keyStoreApi
         return err;
     }
 
-    err = SeosCryptoClient_init(cryptoApi, cryptoRpcHandle, cryptoClientDataport);
+    err = SeosCryptoRpcClient_init(cryptoApi, cryptoRpcHandle, cryptoClientDataport);
     if (err != SEOS_SUCCESS)
     {
-        Debug_LOG_ERROR("%s: SeosCryptoClient_init failed with error code %d!",
+        Debug_LOG_ERROR("%s: SeosCryptoRpcClient_init failed with error code %d!",
                         __func__, err);
         return err;
     }

@@ -3,8 +3,8 @@
  *
  */
 
-#include "SeosCryptoClient.h"
+#include "SeosCryptoRpcClient.h"
 #include "SeosKeyStoreClient.h"
 
 seos_err_t
-initDemo(SeosCryptoClient* cryptoApi, SeosKeyStoreClient* keyStoreApi);
+initDemo(SeosCryptoRpcClient* cryptoApi, SeosKeyStoreClient* keyStoreApi);
