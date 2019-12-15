@@ -108,7 +108,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
     err = SeosCryptoApi_Key_import(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_import failed with err %d", err);
-    err = SeosCryptoApi_Key_free(cryptoApi, keyHandle);
+    err = SeosCryptoApi_Key_free(&keyHandle);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_free failed with err %d", err);
 
@@ -121,7 +121,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
     err = SeosCryptoApi_Key_import(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_import failed with err %d", err);
-    err = SeosCryptoApi_Key_free(cryptoApi, keyHandle);
+    err = SeosCryptoApi_Key_free(&keyHandle);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_free failed with err %d", err);
 
@@ -134,7 +134,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
     err = SeosCryptoApi_Key_import(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_import failed with err %d", err);
-    err = SeosCryptoApi_Key_free(cryptoApi, keyHandle);
+    err = SeosCryptoApi_Key_free(&keyHandle);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_free failed with err %d", err);
 
@@ -147,7 +147,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
     err = SeosCryptoApi_Key_import(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_import failed with err %d", err);
-    err = SeosCryptoApi_Key_free(cryptoApi, keyHandle);
+    err = SeosCryptoApi_Key_free(&keyHandle);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_free failed with err %d", err);
 
@@ -160,7 +160,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
     err = SeosCryptoApi_Key_import(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_import failed with err %d", err);
-    err = SeosCryptoApi_Key_free(cryptoApi, keyHandle);
+    err = SeosCryptoApi_Key_free(&keyHandle);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_free failed with err %d", err);
 
@@ -173,7 +173,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
     err = SeosCryptoApi_Key_import(cryptoApi, &keyHandle, NULL, &keyData);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_import failed with err %d", err);
-    err = SeosCryptoApi_Key_free(cryptoApi, keyHandle);
+    err = SeosCryptoApi_Key_free(&keyHandle);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_Key_free failed with err %d", err);
 
