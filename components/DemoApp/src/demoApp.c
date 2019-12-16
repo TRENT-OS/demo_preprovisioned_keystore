@@ -11,7 +11,6 @@
  */
 #include "LibDebug/Debug.h"
 
-#include "SeosCryptoRpcClient.h"
 #include "SeosKeyStoreClient.h"
 
 #include "SeosCryptoApi.h"
@@ -39,7 +38,7 @@
 static SeosCryptoApi_Key_Data keyData;
 
 /* Private functions prototypes ----------------------------------------------*/
-static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
+static seos_err_t runDemo(SeosCryptoApi* cryptoApi,
                           SeosKeyStoreCtx* keyStoreApi);
 
 /**
@@ -63,7 +62,7 @@ static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
 int run()
 {
     seos_err_t err = SEOS_ERROR_GENERIC;
-    SeosCryptoRpcClient cryptoApi;
+    SeosCryptoApi cryptoApi;
     SeosKeyStoreClient keyStoreApi;
 
     /***************************** Initialization ****************************/
@@ -75,7 +74,7 @@ int run()
     }
 
     /***************************** DEMO APP **********************************/
-    err = runDemo(&cryptoApi.parent, &keyStoreApi.parent);
+    err = runDemo(&cryptoApi, &keyStoreApi.parent);
     if (err != SEOS_SUCCESS)
     {
         Debug_LOG_ERROR("%s: runDemo failed with error code %d!", __func__, err);
@@ -83,7 +82,7 @@ int run()
     }
 
     /***************************** Destruction *******************************/
-    SeosCryptoRpcClient_free(&cryptoApi.parent);
+    SeosCryptoApi_free(&cryptoApi);
     SeosKeyStoreClient_deInit(&keyStoreApi.parent);
 
     Debug_LOG_INFO("\n\nPreprovisioning keystore demo succeeded!\n");
@@ -92,7 +91,7 @@ int run()
 }
 
 /* Private functions -----------------------------------------------------------*/
-static seos_err_t runDemo(SeosCryptoApi_Context* cryptoApi,
+static seos_err_t runDemo(SeosCryptoApi* cryptoApi,
                           SeosKeyStoreCtx* keyStoreApi)
 {
     seos_err_t err = SEOS_ERROR_GENERIC;

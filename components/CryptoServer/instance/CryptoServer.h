@@ -4,16 +4,15 @@
  */
 #pragma once
 
-#include "SeosCryptoRpcServer.h"
+#include "SeosCryptoApi.h"
+
 #include "SeosKeyStoreRpc.h"
 
-#include <camkes.h>
+seos_err_t
+Crypto_openSession(SeosCryptoApi_Ptr* api);
 
 seos_err_t
-Crypto_getRpcHandle(SeosCryptoApi_RpcServer* instance);
-
-void
-Crypto_closeRpcHandle(SeosCryptoApi_RpcServer instance);
+Crypto_closeSession(SeosCryptoApi_Ptr api);
 
 seos_err_t
 KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance);

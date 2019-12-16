@@ -7,4 +7,4 @@
 #include "SeosKeyStoreClient.h"
 
 seos_err_t
-initDemo(SeosCryptoRpcClient* cryptoApi, SeosKeyStoreClient* keyStoreApi);
+initDemo(SeosCryptoApi* cryptoApi, SeosKeyStoreClient* keyStoreApi);

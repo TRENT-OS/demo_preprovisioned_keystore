@@ -6,41 +6,59 @@
 
 #include "CryptoServer.h"
 #include "CryptoServerInit.h"
-#include "SeosCryptoLib.h"
+#include "SeosCryptoApi.h"
 #include <camkes.h>
 
-static SeosCryptoLib    cryptoCore;
+static SeosCryptoApi* cryptoInst;
 
 static int dummyEntropyFunc(void* ctx, unsigned char* buf, size_t len);
 
 seos_err_t
-Crypto_getRpcHandle(SeosCryptoApi_RpcServer* instance)
+Crypto_openSession(
+    SeosCryptoApi_Ptr* api)
 {
-    static SeosCryptoRpcServer the_one;
-    const SeosCryptoApi_Callbacks cb = {
-        .malloc     = malloc,
-        .free       = free,
-        .entropy    = dummyEntropyFunc
+    seos_err_t err;
+    SeosCryptoApi_Config cfg =
+    {
+        .mode = SeosCryptoApi_Mode_RPC_SERVER_WITH_LIBRARY,
+        .mem = {
+            .malloc = malloc,
+            .free   = free,
+        },
+        .impl.lib.rng = {
+            .entropy = dummyEntropyFunc,
+            .context = NULL
+        },
+        .server.dataPort = cryptoServerDataport
     };
 
-    seos_err_t retval = SeosCryptoLib_init(&cryptoCore, &cb, NULL);
-    if (SEOS_SUCCESS == retval)
+    if ((cryptoInst = malloc(sizeof(SeosCryptoApi))) == NULL)
     {
-        retval = SeosCryptoRpcServer_init(&the_one, &cryptoCore, cryptoServerDataport);
-        *instance = &the_one;
-
-        if (SEOS_SUCCESS == retval)
-        {
-            Debug_LOG_TRACE("%s: created rpc object %p", __func__, *instance);
-        }
+        return SEOS_ERROR_INSUFFICIENT_SPACE;
     }
-    return retval;
+
+    err = SeosCryptoApi_init(cryptoInst, &cfg);
+    Debug_LOG_TRACE("SeosCryptoApi_init failed with %d", err);
+
+    *api = cryptoInst;
+
+    return err;
 }
 
-void
-Crypto_closeRpcHandle(SeosCryptoApi_RpcServer instance)
+seos_err_t
+Crypto_closeSession(
+    SeosCryptoApi_Ptr api)
 {
-    /// TODO
+    seos_err_t err;
+
+    if ((err = SeosCryptoApi_free(api)) != SEOS_SUCCESS)
+    {
+        Debug_LOG_TRACE("SeosCryptoApi_free failed with %d", err);
+    }
+
+    free(api);
+
+    return err;
 }
 
 seos_err_t
@@ -58,7 +76,7 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
 
     seos_err_t retval = SeosKeyStore_init(&keyStore,
                                           keyStoreCtx.fileStreamFactory,
-                                          SeosCryptoLib_TO_SEOS_CRYPTO_CTX(&cryptoCore),
+                                          cryptoInst,
                                           "KEY_STORE");
 
     if (retval != SEOS_SUCCESS)

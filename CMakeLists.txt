@@ -4,7 +4,8 @@ seos_set_config_file(config.h)
 
 seos_use_libs(
     SEOS_LIBS
-    SEOS_CRYPTO
+    SEOS_CRYPTO_WITH_RPC_CLIENT
+    SEOS_CRYPTO_WITH_RPC_SERVER
     SEOS_CRYPTO_IMPL_MBEDTLS
     SEOS_KEYSTORE
     SEOS_FILESYSTEM_SPIFFS_LEGACY
@@ -34,7 +35,7 @@ DeclareCAmkESComponent(DemoApp
         seos_core_api
         seos_libs
         seos_filesystem_spiffs_legacy
-        seos_crypto
+        seos_crypto_with_rpc_client
         seos_keystore
 )
 
@@ -44,7 +45,6 @@ DeclareCAmkESComponent(CryptoServer
     SOURCES
         components/CryptoServer/instance/CryptoServer.c
         components/CryptoServer/instance/CryptoServerInit.c
-        ${SEOS_LIBS_DIR}/seos_crypto/src/SeosCryptoRpcServer.c
         ${SEOS_LIBS_DIR}/seos_keystore/src/SeosKeyStoreRpc.c
     C_FLAGS
         -Wall -Werror
@@ -52,7 +52,7 @@ DeclareCAmkESComponent(CryptoServer
         seos_core_api
         seos_libs
         seos_filesystem_spiffs_legacy
-        seos_crypto
+        seos_crypto_with_rpc_server
         seos_keystore
 )
 
