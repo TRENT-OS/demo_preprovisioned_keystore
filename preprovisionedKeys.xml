@@ -8,10 +8,8 @@ KEY TYPE:
 KEY NAME:
     String representing key name
 
-KEY FLAGS:
-    SeosCryptoApi_Key_FLAG_NONE                = 0
-    SeosCryptoApi_Key_FLAG_EXPORTABLE_RAW      = 1
-    SeosCryptoApi_Key_FLAG_EXPORTABLE_WRAPPED  = 2
+KEY EXPORTABLE:
+    Key can be exported (only meaningful if key is used in isolated component)
 
 KEY LENGTH:
     Number in bits
@@ -26,14 +24,14 @@ KEY BYTES:
     <key>
         <type>0</type>
         <name>AESKeyImported</name>
-        <flags>1</flags>
+        <exportable>1</exportable>
         <length>256</length>
         <bytes>leoZwkPoYEGUWxJug9v2U5oE6GiIim1R</bytes>
     </key>
     <key>
         <type>0</type>
         <name>AESKeyGenerated</name>
-        <flags>1</flags>
+        <exportable>1</exportable>
         <length>256</length>
         <bytes>0</bytes>
     </key>
@@ -41,14 +39,14 @@ KEY BYTES:
         <type>1</type>
         <namePrv>RSAKeyPrv</namePrv>
         <namePub>RSAKeyPub</namePub>
-        <flags>1</flags>
+        <exportable>1</exportable>
         <length>1024</length>
     </key>
     <key>
         <type>2</type>
         <namePrv>DHKeyPrv</namePrv>
         <namePub>DHKeyPub</namePub>
-        <flags>1</flags>
+        <exportable>1</exportable>
         <length>256</length>
     </key>
 </keys>
