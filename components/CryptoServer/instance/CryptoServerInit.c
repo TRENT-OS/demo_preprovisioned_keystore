@@ -14,7 +14,10 @@ bool keyStoreContext_ctor(KeyStoreContext*  keyStoreCtx,
                           uint8_t           channelNum,
                           void*             dataport)
 {
-    if (!ChanMuxClient_ctor(&(keyStoreCtx->chanMuxClient), channelNum, dataport))
+    if (!ChanMuxClient_ctor(&(keyStoreCtx->chanMuxClient),
+                            channelNum,
+                            dataport,
+                            dataport))
     {
         Debug_LOG_ERROR("%s: Failed to construct chanMuxClient, channel %d!", __func__,
                         channelNum);
