@@ -4,40 +4,40 @@
 import <std_connector.camkes>;
 
 import "components/DemoApp/DemoApp.camkes";
-import "components/CryptoServer/CryptoServer.camkes";
+import "components/RpcServer/RpcServer.camkes";
 import "components/ChanMux/ChanMux.camkes";
 import "components/Uart/Uart.camkes";
 
 assembly {
     composition {
         component   DemoApp             demoApp;
-        component   CryptoServer        cryptoServer;
+        component   RpcServer           rpcServer;
         component   ChanMux             chanMux;
         component   UartDev             uartDev;
         component   UartDrv             uartDrv;
 
         connection  seL4RPCCall         main_chanmux                (from demoApp.ChanMuxRpc, to chanMux.ChanMuxIn);
-        connection  seL4RPCCall         cryptoServer_chanmux        (from cryptoServer.ChanMuxRpc, to chanMux.ChanMuxIn);
+        connection  seL4RPCCall         rpcServer_chanmux           (from rpcServer.ChanMuxRpc, to chanMux.ChanMuxIn);
 
         connection  seL4RPCCall         chanmux_uart                (from chanMux.Output, to uartDrv.UartDrv);
         connection  seL4RPCCall         uart_chanmux                (from uartDrv.Output, to chanMux.ChanMuxOut);
 
         connection  seL4SharedData      uart_dataConnection         (from chanMux.outputDataPort, to uartDrv.inputDataPort);
         connection  seL4SharedData      mainDataConnection          (from demoApp.chanMuxDataPort, to chanMux.mainDataPort);
-        connection  seL4SharedData      cryptoServerDataConnection  (from cryptoServer.chanMuxDataPort, to chanMux.mainDataPort);
+        connection  seL4SharedData      rpcServerDataConnection     (from rpcServer.chanMuxDataPort, to chanMux.mainDataPort);
 
         connection  seL4Notification    dataAvailableMain           (from chanMux.dataAvailableMain, to demoApp.ChanMuxSignal_dataAvailable);
-        connection  seL4Notification    dataAvailableCrypto         (from chanMux.dataAvailableMain, to cryptoServer.ChanMuxSignal_dataAvailable);
+        connection  seL4Notification    dataAvailableCrypto         (from chanMux.dataAvailableMain, to rpcServer.ChanMuxSignal_dataAvailable);
 
         connection  seL4HardwareMMIO    uart_memio                  (from uartDrv.uartRegBase, to uartDev.uartRegBase);
 
-        connection seL4SharedData       cryptoData                  (from demoApp.cryptoClientDataport, to cryptoServer.cryptoServerDataport);
-        connection seL4RPCCall          cryptoRpc                   (from demoApp.Crypto, to cryptoServer.Crypto);
-        connection seL4RPCCall          seosCryptoRpc               (from demoApp.SeosCryptoRpcServer, to cryptoServer.SeosCryptoRpcServer);
+        connection seL4SharedData       cryptoData                  (from demoApp.cryptoClientDataport, to rpcServer.rpcServerDataport);
+        connection seL4RPCCall          cryptoRpc                   (from demoApp.CryptoRpcServer, to rpcServer.CryptoRpcServer);
+        connection seL4RPCCall          seosCryptoRpc               (from demoApp.SeosCryptoRpc_Server, to rpcServer.SeosCryptoRpc_Server);
 
-        connection seL4SharedData       keyStoreData                (from demoApp.keyStoreClientDataport, to cryptoServer.keyStoreServerDataport);
-        connection seL4RPCCall          keyStoreRpc                 (from demoApp.KeyStore, to cryptoServer.KeyStore);
-        connection seL4RPCCall          seosKeyStoreRpc             (from demoApp.SeosKeyStoreRpc, to cryptoServer.SeosKeyStoreRpc);
+        connection seL4SharedData       keyStoreData                (from demoApp.keyStoreClientDataport, to rpcServer.keyStoreServerDataport);
+        connection seL4RPCCall          keyStoreRpc                 (from demoApp.KeyStore, to rpcServer.KeyStore);
+        connection seL4RPCCall          seosKeyStoreRpc             (from demoApp.SeosKeyStoreRpc, to rpcServer.SeosKeyStoreRpc);
     }
     configuration {
         uartDev.uartRegBase_paddr  = 0xE0000000;

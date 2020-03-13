@@ -2,7 +2,7 @@
  * Copyright (C) 2019, Hensoldt Cyber GmbH
  */
 /* Includes ------------------------------------------------------------------*/
-#include "CryptoServerInit.h"
+#include "RpcServerInit.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define NVM_PARTITION_SIZE      (1024*128)

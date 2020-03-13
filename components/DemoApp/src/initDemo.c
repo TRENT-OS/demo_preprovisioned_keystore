@@ -9,7 +9,7 @@
 
 #include "camkes.h"
 
-seos_err_t initDemo(SeosCryptoApi* cryptoApi, SeosKeyStoreClient* keyStoreApi)
+seos_err_t initDemo(SeosCryptoApiH* hCrypto, SeosKeyStoreClient* keyStoreApi)
 {
     seos_err_t err = SEOS_ERROR_GENERIC;
     SeosCryptoApi_Config cfgRemote =
@@ -23,10 +23,10 @@ seos_err_t initDemo(SeosCryptoApi* cryptoApi, SeosKeyStoreClient* keyStoreApi)
     };
 
     /***************************** Init crypto *******************************/
-    err = Crypto_openSession(&cfgRemote.impl.client.api);
+    err = CryptoRpcServer_openSession();
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
-                          "Crypto_openSession failed with error code %d!", err);
-    err = SeosCryptoApi_init(cryptoApi, &cfgRemote);
+                          "CryptoRpcServer_openSession failed with error code %d!", err);
+    err = SeosCryptoApi_init(hCrypto, &cfgRemote);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "SeosCryptoApi_init failed with error code %d!", err);
 

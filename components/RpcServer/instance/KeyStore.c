@@ -4,61 +4,16 @@
  */
 #include "LibDebug/Debug.h"
 
-#include "CryptoServer.h"
-#include "CryptoServerInit.h"
+#include "RpcServerInit.h"
 #include "SeosCryptoApi.h"
 #include <camkes.h>
 
-static SeosCryptoApi* cryptoInst;
-
-static int dummyEntropyFunc(void* ctx, unsigned char* buf, size_t len);
-
-seos_err_t
-Crypto_openSession(
-    SeosCryptoApi_Ptr* api)
+static int entropyFunc(
+    void*          ctx,
+    unsigned char* buf,
+    size_t         len)
 {
-    seos_err_t err;
-    SeosCryptoApi_Config cfg =
-    {
-        .mode = SeosCryptoApi_Mode_RPC_SERVER_WITH_LIBRARY,
-        .mem = {
-            .malloc = malloc,
-            .free   = free,
-        },
-        .impl.lib.rng = {
-            .entropy = dummyEntropyFunc,
-            .context = NULL
-        },
-        .server.dataPort = cryptoServerDataport
-    };
-
-    if ((cryptoInst = malloc(sizeof(SeosCryptoApi))) == NULL)
-    {
-        return SEOS_ERROR_INSUFFICIENT_SPACE;
-    }
-
-    err = SeosCryptoApi_init(cryptoInst, &cfg);
-    Debug_LOG_TRACE("SeosCryptoApi_init failed with %d", err);
-
-    *api = cryptoInst;
-
-    return err;
-}
-
-seos_err_t
-Crypto_closeSession(
-    SeosCryptoApi_Ptr api)
-{
-    seos_err_t err;
-
-    if ((err = SeosCryptoApi_free(api)) != SEOS_SUCCESS)
-    {
-        Debug_LOG_TRACE("SeosCryptoApi_free failed with %d", err);
-    }
-
-    free(api);
-
-    return err;
+    return 0;
 }
 
 seos_err_t
@@ -67,6 +22,24 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
     static SeosKeyStore keyStore;
     static SeosKeyStoreRpc the_one;
     static KeyStoreContext keyStoreCtx;
+    static SeosCryptoApi_Config cfg =
+    {
+        .mode = SeosCryptoApi_Mode_LIBRARY,
+        .mem = {
+            .malloc = malloc,
+            .free   = free,
+        },
+        .impl.lib.rng = {
+            .entropy = entropyFunc,
+        },
+    };
+    SeosCryptoApiH hCrypto;
+
+    if (SeosCryptoApi_init(&hCrypto, &cfg) != SEOS_SUCCESS)
+    {
+        Debug_LOG_ERROR("%s: Failed to initialize the crypto!", __func__);
+        return 0;
+    }
 
     if (!keyStoreContext_ctor(&keyStoreCtx, 6, (void*)chanMuxDataPort))
     {
@@ -76,7 +49,7 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
 
     seos_err_t retval = SeosKeyStore_init(&keyStore,
                                           keyStoreCtx.fileStreamFactory,
-                                          cryptoInst,
+                                          hCrypto,
                                           "KEY_STORE");
 
     if (retval != SEOS_SUCCESS)
@@ -110,9 +83,4 @@ void
 KeyStore_closeRpcHandle(SeosKeyStoreRpc_Handle instance)
 {
     /// TODO
-}
-
-static int dummyEntropyFunc(void* ctx, unsigned char* buf, size_t len)
-{
-    return 0;
 }

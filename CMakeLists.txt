@@ -39,12 +39,13 @@ DeclareCAmkESComponent(DemoApp
         seos_keystore
 )
 
-DeclareCAmkESComponent(CryptoServer
+DeclareCAmkESComponent(RpcServer
     INCLUDES
         common
     SOURCES
-        components/CryptoServer/instance/CryptoServer.c
-        components/CryptoServer/instance/CryptoServerInit.c
+        components/RpcServer/instance/CryptoRpcServer.c
+        components/RpcServer/instance/KeyStore.c
+        components/RpcServer/instance/RpcServerInit.c
         ${SEOS_LIBS_DIR}/seos_keystore/src/SeosKeyStoreRpc.c
     C_FLAGS
         -Wall -Werror
