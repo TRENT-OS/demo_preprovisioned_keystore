@@ -33,7 +33,7 @@ assembly {
 
         connection seL4SharedData       cryptoData                  (from demoApp.cryptoClientDataport, to rpcServer.rpcServerDataport);
         connection seL4RPCCall          cryptoRpc                   (from demoApp.CryptoRpcServer, to rpcServer.CryptoRpcServer);
-        connection seL4RPCCall          seosCryptoRpc               (from demoApp.SeosCryptoRpc_Server, to rpcServer.SeosCryptoRpc_Server);
+        connection seL4RPCCall          seosCryptoRpc               (from demoApp.OS_CryptoRpcServer, to rpcServer.OS_CryptoRpcServer);
 
         connection seL4SharedData       keyStoreData                (from demoApp.keyStoreClientDataport, to rpcServer.keyStoreServerDataport);
         connection seL4RPCCall          keyStoreRpc                 (from demoApp.KeyStore, to rpcServer.KeyStore);

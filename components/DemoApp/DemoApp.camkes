@@ -6,14 +6,14 @@ import "../../interfaces/CryptoRpcServerInf.camkes";
 import "../../interfaces/KeyStoreInf.camkes";
 import "../../interfaces/ChanMuxInf.camkes";
 
-import <seos_if_cryptoApi.camkes>;
+import <if_OS_Crypto.camkes>;
 
 component DemoApp {
     control;
 
     dataport    Buf                 cryptoClientDataport;
     uses        CryptoRpcServerInf  CryptoRpcServer;
-    uses        seos_if_cryptoApi   SeosCryptoRpc_Server;
+    uses        if_OS_Crypto        OS_CryptoRpcServer;
 
     dataport    Buf                 keyStoreClientDataport;
     uses        KeyStoreInf         KeyStore;

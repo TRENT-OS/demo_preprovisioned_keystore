@@ -9,12 +9,12 @@
 
 #include "camkes.h"
 
-seos_err_t initDemo(SeosCryptoApiH* hCrypto, SeosKeyStoreClient* keyStoreApi)
+seos_err_t initDemo(OS_Crypto_Handle_t* hCrypto, SeosKeyStoreClient* keyStoreApi)
 {
     seos_err_t err = SEOS_ERROR_GENERIC;
-    SeosCryptoApi_Config cfgRemote =
+    OS_Crypto_Config_t cfgRemote =
     {
-        .mode = SeosCryptoApi_Mode_RPC_CLIENT,
+        .mode = OS_Crypto_Mode_RPC_CLIENT,
         .mem = {
             .malloc = malloc,
             .free = free,
@@ -26,9 +26,9 @@ seos_err_t initDemo(SeosCryptoApiH* hCrypto, SeosKeyStoreClient* keyStoreApi)
     err = CryptoRpcServer_openSession();
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "CryptoRpcServer_openSession failed with error code %d!", err);
-    err = SeosCryptoApi_init(hCrypto, &cfgRemote);
+    err = OS_Crypto_init(hCrypto, &cfgRemote);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
-                          "SeosCryptoApi_init failed with error code %d!", err);
+                          "OS_Crypto_init failed with error code %d!", err);
 
     /***************************** Init KeyStore *******************************/
     SeosKeyStoreRpc_Handle keyStoreRpcHandle = NULL;

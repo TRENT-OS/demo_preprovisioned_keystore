@@ -1,12 +1,12 @@
 import "../../interfaces/CryptoRpcServerInf.camkes";
 import "../../interfaces/KeyStoreInf.camkes";
 
-import <seos_if_cryptoApi.camkes>;
+import <if_OS_Crypto.camkes>;
 
 component RpcServer {
     dataport    Buf                 rpcServerDataport;
     provides    CryptoRpcServerInf  CryptoRpcServer;
-    provides    seos_if_cryptoApi   SeosCryptoRpc_Server;
+    provides    if_OS_Crypto        OS_CryptoRpcServer;
 
     dataport    Buf                 keyStoreServerDataport;
     provides    KeyStoreInf         KeyStore;

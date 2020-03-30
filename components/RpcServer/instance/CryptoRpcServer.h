@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "SeosCryptoApi.h"
+#include "OS_Crypto.h"
 
 seos_err_t
 CryptoRpcServer_openSession(void);

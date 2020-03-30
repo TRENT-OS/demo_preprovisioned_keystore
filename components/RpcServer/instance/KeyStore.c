@@ -5,7 +5,7 @@
 #include "LibDebug/Debug.h"
 
 #include "RpcServerInit.h"
-#include "SeosCryptoApi.h"
+#include "OS_Crypto.h"
 #include <camkes.h>
 
 static int entropyFunc(
@@ -22,9 +22,9 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
     static SeosKeyStore keyStore;
     static SeosKeyStoreRpc the_one;
     static KeyStoreContext keyStoreCtx;
-    static SeosCryptoApi_Config cfg =
+    static OS_Crypto_Config_t cfg =
     {
-        .mode = SeosCryptoApi_Mode_LIBRARY,
+        .mode = OS_Crypto_Mode_LIBRARY,
         .mem = {
             .malloc = malloc,
             .free   = free,
@@ -33,9 +33,9 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
             .entropy = entropyFunc,
         },
     };
-    SeosCryptoApiH hCrypto;
+    OS_Crypto_Handle_t hCrypto;
 
-    if (SeosCryptoApi_init(&hCrypto, &cfg) != SEOS_SUCCESS)
+    if (OS_Crypto_init(&hCrypto, &cfg) != SEOS_SUCCESS)
     {
         Debug_LOG_ERROR("%s: Failed to initialize the crypto!", __func__);
         return 0;

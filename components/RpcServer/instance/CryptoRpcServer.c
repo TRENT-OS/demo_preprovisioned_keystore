@@ -3,13 +3,13 @@
  *
  */
 
-#include "SeosCryptoApi.h"
+#include "OS_Crypto.h"
 
 #include "CryptoRpcServer.h"
 
 #include <camkes.h>
 
-static SeosCryptoApiH hCrypto;
+static OS_Crypto_Handle_t hCrypto;
 
 static int entropyFunc(
     void*          ctx,
@@ -19,8 +19,8 @@ static int entropyFunc(
     return 0;
 }
 
-SeosCryptoApiH
-SeosCryptoRpc_Server_getSeosCryptoApi(
+OS_Crypto_Handle_t
+OS_CryptoRpcServer_getCrypto(
     void)
 {
     // We have only a single instance
@@ -32,9 +32,9 @@ CryptoRpcServer_openSession(
     void)
 {
     seos_err_t err;
-    SeosCryptoApi_Config cfg =
+    OS_Crypto_Config_t cfg =
     {
-        .mode = SeosCryptoApi_Mode_RPC_SERVER_WITH_LIBRARY,
+        .mode = OS_Crypto_Mode_RPC_SERVER_WITH_LIBRARY,
         .mem = {
             .malloc = malloc,
             .free   = free,
@@ -45,9 +45,9 @@ CryptoRpcServer_openSession(
         .server.dataPort = rpcServerDataport
     };
 
-    if ((err = SeosCryptoApi_init(&hCrypto, &cfg)) != SEOS_SUCCESS)
+    if ((err = OS_Crypto_init(&hCrypto, &cfg)) != SEOS_SUCCESS)
     {
-        Debug_LOG_ERROR("SeosCryptoApi_init failed with %d", err);
+        Debug_LOG_ERROR("OS_Crypto_init failed with %d", err);
     }
 
     return err;
@@ -59,9 +59,9 @@ CryptoRpcServer_closeSession(
 {
     seos_err_t err;
 
-    if ((err = SeosCryptoApi_free(hCrypto)) != SEOS_SUCCESS)
+    if ((err = OS_Crypto_free(hCrypto)) != SEOS_SUCCESS)
     {
-        Debug_LOG_ERROR("SeosCryptoApi_free failed with %d", err);
+        Debug_LOG_ERROR("OS_Crypto_free failed with %d", err);
     }
 
     return err;

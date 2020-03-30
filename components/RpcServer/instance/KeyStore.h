@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "SeosCryptoApi.h"
+#include "OS_Crypto.h"
 
 #include "SeosKeyStoreRpc.h"
 
