@@ -14,7 +14,7 @@ seos_err_t initDemo(OS_Crypto_Handle_t* hCrypto, SeosKeyStoreClient* keyStoreApi
     seos_err_t err = SEOS_ERROR_GENERIC;
     OS_Crypto_Config_t cfgRemote =
     {
-        .mode = OS_Crypto_Mode_RPC_CLIENT,
+        .mode = OS_Crypto_MODE_RPC_CLIENT,
         .mem = {
             .malloc = malloc,
             .free = free,

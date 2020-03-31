@@ -7,6 +7,7 @@ seos_use_libs(
     SEOS_CRYPTO_WITH_RPC_CLIENT
     SEOS_CRYPTO_WITH_RPC_SERVER
     SEOS_CRYPTO_IMPL_MBEDTLS
+    SEOS_CHANMUX
     SEOS_KEYSTORE
     SEOS_FILESYSTEM_SPIFFS_LEGACY
 )
@@ -54,6 +55,7 @@ DeclareCAmkESComponent(RpcServer
         seos_libs
         seos_filesystem_spiffs_legacy
         seos_crypto_with_rpc_server
+        proxy_nvm
         seos_keystore
 )
 
@@ -72,7 +74,7 @@ DeclareCAmkESComponent(ChanMux
         -Wall -Werror
     LIBS
         seos_core_api
-        seos_libs
+        chanmux_server
 )
 
 DeclareCAmkESRootserver(DemoAppTopLevel.camkes)

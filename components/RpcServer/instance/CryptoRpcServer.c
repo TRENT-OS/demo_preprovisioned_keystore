@@ -34,7 +34,7 @@ CryptoRpcServer_openSession(
     seos_err_t err;
     OS_Crypto_Config_t cfg =
     {
-        .mode = OS_Crypto_Mode_RPC_SERVER_WITH_LIBRARY,
+        .mode = OS_Crypto_MODE_RPC_SERVER_WITH_LIBRARY,
         .mem = {
             .malloc = malloc,
             .free   = free,

@@ -2,7 +2,7 @@
  * Copyright (C) 2019, Hensoldt Cyber GmbH
  *
  */
-#include "ProxyNVM.h"
+#include "ChanMuxNvmDriver.h"
 #include "AesNvm.h"
 #include "SeosSpiffs.h"
 #include "SpiffsFileStream.h"
@@ -11,8 +11,8 @@
 
 typedef struct KeyStoreContext
 {
-    ProxyNVM proxyNVM;
-    ChanMuxClient chanMuxClient;
+    ChanMuxNvmDriver chanMuxNvm;
+    OS_Crypto_Handle_t hCrypto;
     AesNvm aesNvm;
     SeosSpiffs fs;
     FileStreamFactory* fileStreamFactory;

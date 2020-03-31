@@ -24,7 +24,7 @@ KeyStore_getRpcHandle(SeosKeyStoreRpc_Handle* instance)
     static KeyStoreContext keyStoreCtx;
     static OS_Crypto_Config_t cfg =
     {
-        .mode = OS_Crypto_Mode_LIBRARY,
+        .mode = OS_Crypto_MODE_LIBRARY,
         .mem = {
             .malloc = malloc,
             .free   = free,
