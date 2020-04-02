@@ -2,25 +2,12 @@
  * Copyright (C) 2019, Hensoldt Cyber GmbH
  */
 
-import "../../interfaces/CryptoRpcServerInf.camkes";
-import "../../interfaces/KeyStoreInf.camkes";
 import "../../interfaces/ChanMuxInf.camkes";
-
-import <if_OS_Crypto.camkes>;
 
 component DemoApp {
     control;
-
-    dataport    Buf                 cryptoClientDataport;
-    uses        CryptoRpcServerInf  CryptoRpcServer;
-    uses        if_OS_Crypto        OS_CryptoRpcServer;
-
-    dataport    Buf                 keyStoreClientDataport;
-    uses        KeyStoreInf         KeyStore;
-    uses        KeyStoreRpcInf      SeosKeyStoreRpc;
 
     dataport    Buf                 chanMuxDataPort;
     uses        ChanMuxInInf        ChanMuxRpc;
     consumes    DataAvailableEvent  ChanMuxSignal_dataAvailable;
 }
-

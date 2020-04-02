@@ -4,15 +4,14 @@ seos_set_config_file(config.h)
 
 seos_use_libs(
     SEOS_LIBS
-    SEOS_CRYPTO_WITH_RPC_CLIENT
-    SEOS_CRYPTO_WITH_RPC_SERVER
+    SEOS_CRYPTO
     SEOS_CRYPTO_IMPL_MBEDTLS
     SEOS_CHANMUX
     SEOS_KEYSTORE
     SEOS_FILESYSTEM_SPIFFS_LEGACY
 )
 
-# this is used by the keystore to decide which files are build into the lib. It
+# this is used by the keystore to decide which files are built into the lib. It
 # works because this is not simply a variable, but a configuration variable
 # that is preserved after it got defined. The current build process runs the
 # cmake config multiple times. This is set in the first run after the keystore
@@ -29,33 +28,15 @@ DeclareCAmkESComponent(DemoApp
         common
     SOURCES
         components/DemoApp/src/demoApp.c
-        components/DemoApp/src/initDemo.c
     C_FLAGS
         -Wall -Werror
     LIBS
         seos_core_api
         seos_libs
         seos_filesystem_spiffs_legacy
-        seos_crypto_with_rpc_client
-        seos_keystore
-)
-
-DeclareCAmkESComponent(RpcServer
-    INCLUDES
-        common
-    SOURCES
-        components/RpcServer/instance/CryptoRpcServer.c
-        components/RpcServer/instance/KeyStore.c
-        components/RpcServer/instance/RpcServerInit.c
-        ${SEOS_LIBS_DIR}/seos_keystore/src/SeosKeyStoreRpc.c
-    C_FLAGS
-        -Wall -Werror
-    LIBS
-        seos_core_api
-        seos_libs
-        seos_filesystem_spiffs_legacy
-        seos_crypto_with_rpc_server
+        seos_crypto
         proxy_nvm
+        chanmux_client
         seos_keystore
 )
 
