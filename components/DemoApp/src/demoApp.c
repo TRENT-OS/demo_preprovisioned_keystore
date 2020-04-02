@@ -68,8 +68,8 @@ entropyFunc(
 
 static seos_err_t
 initFs(
-    FS_Context_t* ctx,
-    OS_Crypto_Handle_t hCrypto,
+    FS_Context_t*       ctx,
+    OS_Crypto_Handle_t  hCrypto,
     FileStreamFactory** fs)
 {
     seos_err_t err;
@@ -82,7 +82,6 @@ initFs(
                         NVM_CHANNEL_NUM);
         return err;
     }
-
     if (!AesNvm_ctor(&ctx->aesNvm, ChanMuxNvmDriver_get_nvm(&ctx->chanMuxNvm),
                      hCrypto, KEYSTORE_IV, &masterKeyData))
     {
@@ -90,7 +89,6 @@ initFs(
                         NVM_CHANNEL_NUM);
         goto err0;
     }
-
     if (!SeosSpiffs_ctor(&ctx->spiffs, AesNvm_TO_NVM(&ctx->aesNvm),
                          NVM_PARTITION_SIZE, 0))
     {
@@ -98,7 +96,6 @@ initFs(
                         NVM_CHANNEL_NUM);
         goto err1;
     }
-
     if ((err = SeosSpiffs_mount(&ctx->spiffs)) != SEOS_SUCCESS)
     {
         Debug_LOG_ERROR("%s: SeosSpiffs_mount() failed with error code %d, channel %d!",
@@ -143,7 +140,7 @@ freeFs(
 
 static seos_err_t
 runDemo(
-    OS_Crypto_Handle_t hCrypto,
+    OS_Crypto_Handle_t   hCrypto,
     OS_Keystore_Handle_t hKeystore)
 {
     seos_err_t err = SEOS_ERROR_GENERIC;
@@ -240,7 +237,6 @@ int run()
     err = OS_Crypto_init(&hCrypto, &cfgLocal);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "OS_Crypto_init() failed with error code %d!", err);
-
     // We use the crypto also for encryption of the NVM
     err = initFs(&ctx, hCrypto, &fs);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
