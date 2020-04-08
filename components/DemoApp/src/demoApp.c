@@ -48,7 +48,7 @@ static OS_CryptoKey_Data_t masterKeyData =
 };
 static OS_Crypto_Config_t cfgLocal =
 {
-    .mode = OS_Crypto_MODE_LIBRARY,
+    .mode = OS_Crypto_MODE_LIBRARY_ONLY,
     .mem = {
         .malloc = malloc,
         .free = free,
@@ -233,7 +233,7 @@ int run()
     FileStreamFactory* fs;
 
     // Setup Crypto
-    cfgLocal.impl.lib.rng.entropy = entropyFunc;
+    cfgLocal.library.rng.entropy = entropyFunc;
     err = OS_Crypto_init(&hCrypto, &cfgLocal);
     Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
                           "OS_Crypto_init() failed with error code %d!", err);
