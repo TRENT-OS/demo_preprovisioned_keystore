@@ -49,10 +49,6 @@ static OS_CryptoKey_Data_t masterKeyData =
 static OS_Crypto_Config_t cfgLocal =
 {
     .mode = OS_Crypto_MODE_LIBRARY_ONLY,
-    .mem = {
-        .malloc = malloc,
-        .free = free,
-    },
 };
 
 // Private functions -----------------------------------------------------------
