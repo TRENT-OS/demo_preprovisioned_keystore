@@ -6,7 +6,7 @@
 
 #include "ChanMux/ChanMux.h"
 #include "ChanMux_config.h"
-#include "SeosError.h"
+#include "OS_Error.h"
 #include "assert.h"
 #include <camkes.h>
 
@@ -147,7 +147,7 @@ ChanMuxOut_takeByte(char byte)
 //==============================================================================
 
 //------------------------------------------------------------------------------
-seos_err_t
+OS_Error_t
 ChanMuxIn_write(
     unsigned int  chanNum,
     size_t        len,
@@ -172,7 +172,7 @@ ChanMuxIn_write(
     }
 
     Debug_ASSERT( NULL != dp );
-    seos_err_t ret = ChanMux_write(ChanMux_getInstance(), chanNum, dp, &len);
+    OS_Error_t ret = ChanMux_write(ChanMux_getInstance(), chanNum, dp, &len);
     *lenWritten = len;
 
     Debug_LOG_TRACE("%s(): channel %u, lenWritten %u", __func__, chanNum, len);
@@ -182,7 +182,7 @@ ChanMuxIn_write(
 
 
 //------------------------------------------------------------------------------
-seos_err_t
+OS_Error_t
 ChanMuxIn_read(
     unsigned int  chanNum,
     size_t        len,
@@ -207,7 +207,7 @@ ChanMuxIn_read(
     }
 
     Debug_ASSERT( NULL != dp );
-    seos_err_t ret = ChanMux_read(ChanMux_getInstance(), chanNum, dp, &len);
+    OS_Error_t ret = ChanMux_read(ChanMux_getInstance(), chanNum, dp, &len);
     *lenRead = len;
 
     Debug_LOG_TRACE("%s(): channel %u, lenRead %u", __func__, chanNum, len);

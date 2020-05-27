@@ -7,7 +7,7 @@
 
 #include "ChanMuxNvmDriver.h"
 #include "AesNvm.h"
-#include "SeosSpiffs.h"
+#include "OS_Spiffs.h"
 #include "SpiffsFileStreamFactory.h"
 
 #include "LibDebug/Debug.h"
@@ -36,7 +36,7 @@ typedef struct
 {
     ChanMuxNvmDriver chanMuxNvm;
     AesNvm aesNvm;
-    SeosSpiffs spiffs;
+    OS_Spiffs_t spiffs;
     FileStreamFactory* fileStreamFactory;
 } FS_Context_t;
 
@@ -62,13 +62,13 @@ entropyFunc(
     return 0;
 }
 
-static seos_err_t
+static OS_Error_t
 initFs(
     FS_Context_t*       ctx,
     OS_Crypto_Handle_t  hCrypto,
     FileStreamFactory** fs)
 {
-    seos_err_t err;
+    OS_Error_t err;
 
     err = SEOS_ERROR_GENERIC;
 
@@ -85,16 +85,16 @@ initFs(
                         NVM_CHANNEL_NUM);
         goto err0;
     }
-    if (!SeosSpiffs_ctor(&ctx->spiffs, AesNvm_TO_NVM(&ctx->aesNvm),
+    if (!OS_Spiffs_ctor(&ctx->spiffs, AesNvm_TO_NVM(&ctx->aesNvm),
                          NVM_PARTITION_SIZE, 0))
     {
         Debug_LOG_ERROR("%s: Failed to initialize spiffs, channel %d!", __func__,
                         NVM_CHANNEL_NUM);
         goto err1;
     }
-    if ((err = SeosSpiffs_mount(&ctx->spiffs)) != SEOS_SUCCESS)
+    if ((err = OS_Spiffs_mount(&ctx->spiffs)) != SEOS_SUCCESS)
     {
-        Debug_LOG_ERROR("%s: SeosSpiffs_mount() failed with error code %d, channel %d!",
+        Debug_LOG_ERROR("%s: OS_Spiffs_mount() failed with error code %d, channel %d!",
                         __func__, err, NVM_CHANNEL_NUM);
         goto err1;
     }
@@ -112,7 +112,7 @@ initFs(
     return SEOS_SUCCESS;
 
 err2:
-    SeosSpiffs_dtor(&ctx->spiffs);
+    OS_Spiffs_dtor(&ctx->spiffs);
 err1:
     AesNvm_dtor(AesNvm_TO_NVM(&ctx->aesNvm));
 err0:
@@ -121,25 +121,25 @@ err0:
     return err;
 }
 
-static seos_err_t
+static OS_Error_t
 freeFs(
     FS_Context_t*      ctx,
     FileStreamFactory* fs)
 {
     SpiffsFileStreamFactory_dtor(fs);
-    SeosSpiffs_dtor(&ctx->spiffs);
+    OS_Spiffs_dtor(&ctx->spiffs);
     AesNvm_dtor(AesNvm_TO_NVM(&ctx->aesNvm));
     ChanMuxNvmDriver_dtor(&ctx->chanMuxNvm);
 
     return SEOS_SUCCESS;
 }
 
-static seos_err_t
+static OS_Error_t
 runDemo(
     OS_Crypto_Handle_t   hCrypto,
     OS_Keystore_Handle_t hKeystore)
 {
-    seos_err_t err = SEOS_ERROR_GENERIC;
+    OS_Error_t err = SEOS_ERROR_GENERIC;
     OS_CryptoKey_Data_t keyData;
     OS_CryptoKey_Handle_t hKey;
     size_t keyLen;
@@ -222,7 +222,7 @@ runDemo(
 // Public functions -----------------------------------------------------------
 int run()
 {
-    seos_err_t err = SEOS_ERROR_GENERIC;
+    OS_Error_t err = SEOS_ERROR_GENERIC;
     OS_Crypto_Handle_t hCrypto;
     OS_Keystore_Handle_t hKeystore;
     FS_Context_t ctx;
