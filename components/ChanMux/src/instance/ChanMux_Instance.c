@@ -168,7 +168,7 @@ ChanMuxIn_write(
     //---------------------------------
     default:
         Debug_LOG_ERROR("%s(): invalid channel %u", __func__, chanNum);
-        return SEOS_ERROR_ACCESS_DENIED;
+        return OS_ERROR_ACCESS_DENIED;
     }
 
     Debug_ASSERT( NULL != dp );
@@ -203,7 +203,7 @@ ChanMuxIn_read(
     //---------------------------------
     default:
         Debug_LOG_ERROR("%s(): invalid channel %u", __func__, chanNum);
-        return SEOS_ERROR_ACCESS_DENIED;
+        return OS_ERROR_ACCESS_DENIED;
     }
 
     Debug_ASSERT( NULL != dp );

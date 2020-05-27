@@ -70,7 +70,7 @@ initFs(
 {
     OS_Error_t err;
 
-    err = SEOS_ERROR_GENERIC;
+    err = OS_ERROR_GENERIC;
 
     if (!ChanMuxNvmDriver_ctor(&ctx->chanMuxNvm, NVM_CHANNEL_NUM, NVM_DATAPORT))
     {
@@ -92,7 +92,7 @@ initFs(
                         NVM_CHANNEL_NUM);
         goto err1;
     }
-    if ((err = OS_Spiffs_mount(&ctx->spiffs)) != SEOS_SUCCESS)
+    if ((err = OS_Spiffs_mount(&ctx->spiffs)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("%s: OS_Spiffs_mount() failed with error code %d, channel %d!",
                         __func__, err, NVM_CHANNEL_NUM);
@@ -105,11 +105,11 @@ initFs(
     {
         Debug_LOG_ERROR("%s: Failed to get the SpiffsFileStreamFactory instance, channel %d!",
                         __func__, NVM_CHANNEL_NUM);
-        err = SEOS_ERROR_GENERIC;
+        err = OS_ERROR_GENERIC;
         goto err2;
     }
 
-    return SEOS_SUCCESS;
+    return OS_SUCCESS;
 
 err2:
     OS_Spiffs_dtor(&ctx->spiffs);
@@ -131,7 +131,7 @@ freeFs(
     AesNvm_dtor(AesNvm_TO_NVM(&ctx->aesNvm));
     ChanMuxNvmDriver_dtor(&ctx->chanMuxNvm);
 
-    return SEOS_SUCCESS;
+    return OS_SUCCESS;
 }
 
 static OS_Error_t
@@ -139,7 +139,7 @@ runDemo(
     OS_Crypto_Handle_t   hCrypto,
     OS_Keystore_Handle_t hKeystore)
 {
-    OS_Error_t err = SEOS_ERROR_GENERIC;
+    OS_Error_t err = OS_ERROR_GENERIC;
     OS_CryptoKey_Data_t keyData;
     OS_CryptoKey_Handle_t hKey;
     size_t keyLen;
@@ -147,82 +147,82 @@ runDemo(
     /***************************** AES key 1 *******************************/
     keyLen = sizeof(keyData);
     err = OS_Keystore_loadKey(hKeystore, AES_KEY1_NAME, &keyData, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_loadKey() failed with err %d", err);
     err = OS_CryptoKey_import(&hKey, hCrypto, &keyData);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_import() failed with err %d", err);
     err = OS_CryptoKey_free(hKey);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_free() failed with err %d", err);
 
     /***************************** AES key 2 *******************************/
     keyLen = sizeof(keyData);
     err = OS_Keystore_loadKey(hKeystore, AES_KEY1_NAME, &keyData, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_loadKey() failed with err %d", err);
     err = OS_CryptoKey_import(&hKey, hCrypto, &keyData);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_import() failed with err %d", err);
     err = OS_CryptoKey_free(hKey);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_free() failed with err %d", err);
 
     /***************************** RSA private key *******************************/
     keyLen = sizeof(keyData);
     err = OS_Keystore_loadKey(hKeystore, RSA_PRV_KEY_NAME, &keyData, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_loadKey() failed with err %d", err);
     err = OS_CryptoKey_import(&hKey, hCrypto, &keyData);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_import() failed with err %d", err);
     err = OS_CryptoKey_free(hKey);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_free() failed with err %d", err);
 
     /***************************** RSA public key *******************************/
     keyLen = sizeof(keyData);
     err = OS_Keystore_loadKey(hKeystore, RSA_PUB_KEY_NAME, &keyData, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_loadKey() failed with err %d", err);
     err = OS_CryptoKey_import(&hKey, hCrypto, &keyData);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_import() failed with err %d", err);
     err = OS_CryptoKey_free(hKey);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_free() failed with err %d", err);
 
     /***************************** DH private key *******************************/
     keyLen = sizeof(keyData);
     err = OS_Keystore_loadKey(hKeystore, DH_PRV_KEY_NAME, &keyData, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_loadKey() failed with err %d", err);
     err = OS_CryptoKey_import(&hKey, hCrypto, &keyData);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_import() failed with err %d", err);
     err = OS_CryptoKey_free(hKey);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_free() failed with err %d", err);
 
     /***************************** DH public key *******************************/
     keyLen = sizeof(keyData);
     err = OS_Keystore_loadKey(hKeystore, DH_PUB_KEY_NAME, &keyData, &keyLen);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_loadKey() failed with err %d", err);
     err = OS_CryptoKey_import(&hKey, hCrypto, &keyData);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_import() failed with err %d", err);
     err = OS_CryptoKey_free(hKey);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_CryptoKey_free() failed with err %d", err);
 
-    return SEOS_SUCCESS;
+    return OS_SUCCESS;
 }
 
 // Public functions -----------------------------------------------------------
 int run()
 {
-    OS_Error_t err = SEOS_ERROR_GENERIC;
+    OS_Error_t err = OS_ERROR_GENERIC;
     OS_Crypto_Handle_t hCrypto;
     OS_Keystore_Handle_t hKeystore;
     FS_Context_t ctx;
@@ -231,20 +231,20 @@ int run()
     // Setup Crypto
     cfgLocal.library.rng.entropy = entropyFunc;
     err = OS_Crypto_init(&hCrypto, &cfgLocal);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Crypto_init() failed with error code %d!", err);
     // We use the crypto also for encryption of the NVM
     err = initFs(&ctx, hCrypto, &fs);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "initFs() failed with error code %d!", err);
     // Setup keystore
     err = OS_Keystore_init(&hKeystore, fs, hCrypto, KEYSTORE_NAME);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_init() failed with error code %d!", err);
 
     // Run demo
     err = runDemo(hCrypto, hKeystore);
-    if (err != SEOS_SUCCESS)
+    if (err != OS_SUCCESS)
     {
         Debug_LOG_ERROR("%s: runDemo() failed with error code %d!", __func__, err);
         return err;
@@ -252,13 +252,13 @@ int run()
 
     // Tear down everything
     err = OS_Keystore_free(hKeystore);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_free() failed with error code %d!", err);
     err = freeFs(&ctx, fs);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "freeFs() failed with error code %d!", err);
     err = OS_Crypto_free(hCrypto);
-    Debug_ASSERT_PRINTFLN(err == SEOS_SUCCESS,
+    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Crypto_free() failed with error code %d!", err);
 
     Debug_LOG_INFO("\n\nPreprovisioning keystore demo succeeded!\n");
