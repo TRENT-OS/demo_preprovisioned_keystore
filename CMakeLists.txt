@@ -30,13 +30,13 @@ DeclareCAmkESComponent(DemoApp
     C_FLAGS
         -Wall -Werror
     LIBS
-        seos_core_api
-        seos_libs
-        seos_filesystem_spiffs_legacy
-        seos_crypto
+        os_core_api
+        os_libs
+        os_filesystem_spiffs_legacy
+        os_crypto
         proxy_nvm
         chanmux_client
-        seos_keystore
+        os_keystore
 )
 
 DeclareCAmkESComponent(UartDrv
@@ -53,7 +53,7 @@ DeclareCAmkESComponent(ChanMux
     C_FLAGS
         -Wall -Werror
     LIBS
-        seos_core_api
+        os_core_api
         chanmux_server
 )
 
