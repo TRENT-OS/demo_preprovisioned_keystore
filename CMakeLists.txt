@@ -26,15 +26,19 @@ os_use_libs(
 # even make them interface libs that contribute C-file here.
 set(KEYSTORE_AS_COMPONENT ON CACHE BOOL "" FORCE)
 
+
+#-------------------------------------------------------------------------------
 project(tests_keystore_demo C)
 
-DeclareCAmkESComponent(DemoApp
+DeclareCAmkESComponent(
+    DemoApp
     INCLUDES
         common
     SOURCES
         components/DemoApp/src/demoApp.c
     C_FLAGS
-        -Wall -Werror
+        -Wall
+        -Werror
     LIBS
         os_core_api
         os_libs
@@ -45,19 +49,23 @@ DeclareCAmkESComponent(DemoApp
         os_keystore
 )
 
-DeclareCAmkESComponent(UartDrv
+DeclareCAmkESComponent(
+    UartDrv
     SOURCES
         components/Uart/src/UartDrv.c
         components/Uart/src/qemu_uart.c
     C_FLAGS
-        -Wall -Werror
+        -Wall
+        -Werror
 )
 
-DeclareCAmkESComponent(ChanMux
+DeclareCAmkESComponent(
+    ChanMux
     SOURCES
         components/ChanMux/src/instance/ChanMux_Instance.c
     C_FLAGS
-        -Wall -Werror
+        -Wall
+        -Werror
     LIBS
         os_core_api
         chanmux_server
