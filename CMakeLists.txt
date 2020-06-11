@@ -71,6 +71,5 @@ DeclareCAmkESComponent(
         chanmux_server
 )
 
-DeclareCAmkESRootserver(DemoAppTopLevel.camkes)
-GenerateCAmkESRootServer()
+DeclareAndCreateCamkESSystem(DemoAppTopLevel.camkes)
 GenerateSimulateScript()
