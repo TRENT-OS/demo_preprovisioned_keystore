@@ -7,6 +7,7 @@
 #include "ChanMux/ChanMux.h"
 #include "ChanMux_config.h"
 #include "OS_Error.h"
+#include "OS_Dataport.h"
 #include "assert.h"
 #include <camkes.h>
 
@@ -15,10 +16,7 @@ static uint8_t mainFifoBuf[PAGE_SIZE];
 static const ChanMuxConfig_t cfgChanMux =
 {
     .numChannels = CHANMUX_NUM_CHANNELS,
-    .outputDataport = {
-        .io  = (void**) &outputDataPort,
-        .len = PAGE_SIZE
-    },
+    .outputDataport = OS_DATAPORT_ASSIGN(outputDataPort),
     .channelsFifos = {
         {
             // Channel 0
@@ -58,36 +56,15 @@ static const ChanMuxConfig_t cfgChanMux =
     }
 };
 
-const ChannelDataport_t dataports[] =
-{
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = (void**) &mainDataPort,
-        .len = PAGE_SIZE
-    }
+const OS_Dataport_t dataports[] = {
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_NONE,
+    OS_DATAPORT_ASSIGN(mainDataPort),
 };
 
 //------------------------------------------------------------------------------
@@ -158,7 +135,7 @@ ChanMuxIn_write(
     // set defaults to error
     *lenWritten = 0;
 
-    const ChannelDataport_t* dp = NULL;
+    const OS_Dataport_t* dp = NULL;
     switch (chanNum)
     {
     //---------------------------------
@@ -193,7 +170,7 @@ ChanMuxIn_read(
     // set defaults to error
     *lenRead = 0;
 
-    const ChannelDataport_t* dp = NULL;
+    const OS_Dataport_t* dp = NULL;
     switch (chanNum)
     {
     //---------------------------------
