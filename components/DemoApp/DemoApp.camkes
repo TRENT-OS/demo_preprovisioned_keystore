@@ -2,12 +2,17 @@
  * Copyright (C) 2019, Hensoldt Cyber GmbH
  */
 
-import "../../interfaces/ChanMuxInf.camkes";
+import <if_OS_Entropy.camkes>;
+import <if_OS_Storage.camkes>;
 
 component DemoApp {
     control;
 
-    dataport    Buf                 chanMuxDataPort;
-    uses        ChanMuxInInf        ChanMuxRpc;
-    consumes    DataAvailableEvent  ChanMuxSignal_dataAvailable;
+    // Entropy Source
+    uses        if_OS_Entropy           entropy_rpc;
+    dataport    Buf                     entropy_port;
+
+    // ChanMux_Storage interface
+    uses     if_OS_Storage storage_rpc;
+    dataport Buf           storage_port;
 }

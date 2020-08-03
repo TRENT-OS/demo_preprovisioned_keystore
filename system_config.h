@@ -30,7 +30,6 @@
 
 #define Memory_Config_USE_STDLIB_ALLOC
 
-
 //-----------------------------------------------------------------------------
 // Logs
 //-----------------------------------------------------------------------------
@@ -39,6 +38,19 @@
 #define Logs_Config_INCLUDE_LEVEL_IN_MSG    1
 #define Logs_Config_SYSLOG_LEVEL            Log_TRACE
 
+//-----------------------------------------------------------------------------
+// CHanMux
+//-----------------------------------------------------------------------------
+
+// we can't make this an enum, because CAmkES does not understand enums.
+#define CHANMUX_CHANNEL_NVM       6
+
+//-----------------------------------------------------------------------------
+// ChanMUX clients
+//-----------------------------------------------------------------------------
+
+// we can't make this an enum, because CAmkES does not understand enums.
+#define CHANMUX_ID 101
 
 //-----------------------------------------------------------------------------
 // Keystore

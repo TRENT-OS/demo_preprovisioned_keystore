@@ -5,27 +5,59 @@
 import <std_connector.camkes>;
 
 import "components/DemoApp/DemoApp.camkes";
-import "components/ChanMux/ChanMux.camkes";
-import "components/Uart/Uart.camkes";
+
+import <if_OS_Entropy.camkes>;
+
+#include "system_config.h"
+
+#include "EntropySource/camkes/EntropySource.camkes"
+DECLARE_COMPONENT_EntropySource(EntropySource)
+
+#include "UART/Uart.camkes"
+DECLARE_COMPONENT_UART(UART)
+
+#include "ChanMux/ChanMux.camkes"
+ChanMux_DEFINE_COMPONENT(ChanMux,
+        chanMuxStorage, chan)
+
+#include "ChanMux_Storage/ChanMux_Storage.camkes"
 
 assembly {
     composition {
-        component   DemoApp             demoApp;
-        component   ChanMux             chanMux;
-        component   UartDev             uartDev;
-        component   UartDrv             uartDrv;
 
-        connection  seL4RPCCall         main_chanmux                (from demoApp.ChanMuxRpc, to chanMux.ChanMuxIn);
-        connection  seL4RPCCall         chanmux_uart                (from chanMux.Output, to uartDrv.UartDrv);
-        connection  seL4RPCCall         uart_chanmux                (from uartDrv.Output, to chanMux.ChanMuxOut);
-        connection  seL4SharedData      uart_dataConnection         (from chanMux.outputDataPort, to uartDrv.inputDataPort);
-        connection  seL4SharedData      mainDataConnection          (from demoApp.chanMuxDataPort, to chanMux.mainDataPort);
-        connection  seL4Notification    dataAvailableMain           (from chanMux.dataAvailableMain, to demoApp.ChanMuxSignal_dataAvailable);
-        connection  seL4HardwareMMIO    uart_memio                  (from uartDrv.uartRegBase, to uartDev.uartRegBase);
+        // UART
+        DECLARE_AND_CONNECT_INSTANCE_UART(
+            UART, uartDrv)
+
+        // ChanMux
+        ChanMux_DECLARE_AND_CONNECT_INSTANCE_TO_UART(ChanMux, chanMux, uartDrv)
+
+        // ChanMux_Storage
+        component   ChanMux_Storage chanMuxStorage;
+
+        ChanMux_INSTANCE_CONNECT_INTERFACE(chanMux, chanMuxStorage)
+        ChanMux_INSTANCE_CONNECT_CHANNEL(chanMux, chanMuxStorage, chan)
+
+        // DemoApp
+        component   DemoApp             demoApp;
+
+        connection  seL4RPCCall         demoApp_chanMux_storage     (from demoApp.storage_rpc,  to chanMuxStorage.storage_rpc);
+        connection  seL4SharedData      demoApp_chanMux_storage_port(from demoApp.storage_port, to chanMuxStorage.storage_port);
+
+        DECLARE_AND_CONNECT_INSTANCE_EntropySource(
+            EntropySource,
+            entropySource,
+            demoApp.entropy_rpc,
+            demoApp.entropy_port)
     }
     configuration {
-        uartDev.uartRegBase_paddr  = 0xE0000000;
-        uartDev.uartRegBase_size   = 0x1000;
-        uartDrv.inputDataPort      = "R";
+        CONFIGURE_INSTANCE_UART(
+            uartDrv,
+            CFG_CHANMUX_DEFAULT_UART_PHYS_ADDR,
+            CFG_CHANMUX_DEFAULT_UART_INTR)
+
+        // assign endpoint badges for n:1 RPC interface of ChanMUX. The generic
+        // naming scheme is <component>.<interface>_attributes = <badge ID>
+        ChanMux_ASSIGN_CLIENT_BADGE(chanMux, chanMuxStorage, CHANMUX_ID)
     }
 }

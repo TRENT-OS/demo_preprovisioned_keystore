@@ -5,11 +5,6 @@
 #include "OS_Crypto.h"
 #include "OS_Keystore.h"
 
-#include "ChanMuxNvmDriver.h"
-#include "AesNvm.h"
-#include "OS_Spiffs.h"
-#include "SpiffsFileStreamFactory.h"
-
 #include "LibDebug/Debug.h"
 
 #include <stdlib.h>
@@ -34,105 +29,51 @@
 
 typedef struct
 {
-    ChanMuxNvmDriver chanMuxNvm;
-    AesNvm aesNvm;
-    OS_Spiffs_t spiffs;
-    FileStreamFactory* fileStreamFactory;
-} FS_Context_t;
+    OS_FileSystem_Handle_t hFs;
+} testRunner_ctx_t;
 
-static OS_CryptoKey_Data_t masterKeyData =
-{
-    .type = OS_CryptoKey_TYPE_AES,
-    .data.aes.len = sizeof(KEYSTORE_KEY_AES) - 1,
-    .data.aes.bytes = KEYSTORE_KEY_AES
-};
+// Use the EntropySource provided with TRENTOS-M
 static OS_Crypto_Config_t cfgLocal =
 {
     .mode = OS_Crypto_MODE_LIBRARY_ONLY,
+    .library.entropy = OS_CRYPTO_ASSIGN_Entropy(
+        entropy_rpc,
+        entropy_port),
+};
+
+// Config for FileSystem API
+static const OS_FileSystem_Config_t cfgFs =
+{
+    .type = OS_FileSystem_Type_FATFS,
+    .size = OS_FileSystem_STORAGE_MAX,
+    .storage = OS_FILESYSTEM_ASSIGN_Storage(
+        storage_rpc,
+        storage_port),
 };
 
 // Private functions -----------------------------------------------------------
-static int
-entropyFunc(
-    void*          ctx,
-    unsigned char* buf,
-    size_t         len)
-{
-    // NOTE: Requires entropy from PLATFORM!
-    return 0;
-}
-
 static OS_Error_t
-initFs(
-    FS_Context_t*       ctx,
-    OS_Crypto_Handle_t  hCrypto,
-    FileStreamFactory** fs)
+initFileSystem(
+    OS_FileSystem_Handle_t* hFs)
 {
     OS_Error_t err;
 
-    err = OS_ERROR_GENERIC;
-
-    if (!ChanMuxNvmDriver_ctor(&ctx->chanMuxNvm, NVM_CHANNEL_NUM, NVM_DATAPORT))
+    if ((err = OS_FileSystem_init(hFs, &cfgFs)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("%s: Failed to construct chanMuxNvm, channel %d!", __func__,
-                        NVM_CHANNEL_NUM);
+        Debug_LOG_ERROR("OS_FileSystem_init() failed with %d", err);
         return err;
     }
-    if (!AesNvm_ctor(&ctx->aesNvm, ChanMuxNvmDriver_get_nvm(&ctx->chanMuxNvm),
-                     hCrypto, KEYSTORE_IV, &masterKeyData))
-    {
-        Debug_LOG_ERROR("%s: Failed to initialize AesNvm, channel %d!", __func__,
-                        NVM_CHANNEL_NUM);
-        goto err0;
-    }
-    if (!OS_Spiffs_ctor(&ctx->spiffs, AesNvm_TO_NVM(&ctx->aesNvm),
-                         NVM_PARTITION_SIZE, 0))
-    {
-        Debug_LOG_ERROR("%s: Failed to initialize spiffs, channel %d!", __func__,
-                        NVM_CHANNEL_NUM);
-        goto err1;
-    }
-    if ((err = OS_Spiffs_mount(&ctx->spiffs)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("%s: OS_Spiffs_mount() failed with error code %d, channel %d!",
-                        __func__, err, NVM_CHANNEL_NUM);
-        goto err1;
-    }
 
-    *fs = SpiffsFileStreamFactory_TO_FILE_STREAM_FACTORY(
-              SpiffsFileStreamFactory_getInstance(&ctx->spiffs));
-    if (NULL == *fs)
+    // Try mounting, if it fails we format the disk again and try another time
+    if ((err = OS_FileSystem_mount(*hFs)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("%s: Failed to get the SpiffsFileStreamFactory instance, channel %d!",
-                        __func__, NVM_CHANNEL_NUM);
-        err = OS_ERROR_GENERIC;
-        goto err2;
+        Debug_LOG_ERROR("OS_FileSystem_mount() finally failed with %d", err);
+        return err;
     }
 
     return OS_SUCCESS;
-
-err2:
-    OS_Spiffs_dtor(&ctx->spiffs);
-err1:
-    AesNvm_dtor(AesNvm_TO_NVM(&ctx->aesNvm));
-err0:
-    ChanMuxNvmDriver_dtor(&ctx->chanMuxNvm);
-
-    return err;
 }
 
-static OS_Error_t
-freeFs(
-    FS_Context_t*      ctx,
-    FileStreamFactory* fs)
-{
-    SpiffsFileStreamFactory_dtor(fs);
-    OS_Spiffs_dtor(&ctx->spiffs);
-    AesNvm_dtor(AesNvm_TO_NVM(&ctx->aesNvm));
-    ChanMuxNvmDriver_dtor(&ctx->chanMuxNvm);
-
-    return OS_SUCCESS;
-}
 
 static OS_Error_t
 runDemo(
@@ -225,20 +166,18 @@ int run()
     OS_Error_t err = OS_ERROR_GENERIC;
     OS_Crypto_Handle_t hCrypto;
     OS_Keystore_Handle_t hKeystore;
-    FS_Context_t ctx;
-    FileStreamFactory* fs;
+    OS_FileSystem_Handle_t hFs;
 
     // Setup Crypto
-    cfgLocal.library.rng.entropy = entropyFunc;
     err = OS_Crypto_init(&hCrypto, &cfgLocal);
     Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Crypto_init() failed with error code %d!", err);
-    // We use the crypto also for encryption of the NVM
-    err = initFs(&ctx, hCrypto, &fs);
+    // Setup FileSystem
+    err = initFileSystem(&hFs);
     Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
-                          "initFs() failed with error code %d!", err);
+                          "initFileSystem() failed with error code %d!", err);
     // Setup keystore
-    err = OS_Keystore_init(&hKeystore, fs, hCrypto, KEYSTORE_NAME);
+    err = OS_Keystore_init(&hKeystore, hFs, hCrypto, KEYSTORE_NAME);
     Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_init() failed with error code %d!", err);
 
@@ -254,9 +193,7 @@ int run()
     err = OS_Keystore_free(hKeystore);
     Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Keystore_free() failed with error code %d!", err);
-    err = freeFs(&ctx, fs);
-    Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
-                          "freeFs() failed with error code %d!", err);
+
     err = OS_Crypto_free(hCrypto);
     Debug_ASSERT_PRINTFLN(err == OS_SUCCESS,
                           "OS_Crypto_free() failed with error code %d!", err);

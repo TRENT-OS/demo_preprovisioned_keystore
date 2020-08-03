@@ -6,7 +6,11 @@
 
 cmake_minimum_required(VERSION 3.7.2)
 
-os_set_config_file(config.h)
+os_set_config_file(system_config.h)
+
+project(system_config C)
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 # this is used by the keystore to decide which files are built into the lib. It
 # works because this is not simply a variable, but a configuration variable
@@ -32,36 +36,33 @@ DeclareCAmkESComponent(
         -Wall
         -Werror
     LIBS
+        system_config
         os_core_api
         os_libs
-        os_filesystem_spiffs_legacy
+        os_filesystem
         os_crypto
-        proxy_nvm
-        chanmux_client
         os_keystore
 )
 
-DeclareCAmkESComponent(
-    UartDrv
-    SOURCES
-        components/Uart/src/UartDrv.c
-        components/Uart/src/qemu_uart.c
-    C_FLAGS
-        -Wall
-        -Werror
+# Use the existing entropy source, which at this point is just some dummy
+DeclareCAmkESComponent_EntropySource(
+    EntropySource
 )
 
-DeclareCAmkESComponent(
+DeclareCAmkESComponent_ChanMux_Storage(
+    ChanMux_Storage
+)
+
+DeclareCAmkESComponent_ChanMux(
     ChanMux
-    SOURCES
-        components/ChanMux/src/instance/ChanMux_Instance.c
-    C_FLAGS
-        -Wall
-        -Werror
-    LIBS
-        os_core_api
-        chanmux_server
+    components/ChanMux/ChanMux_config.c
+    system_config
 )
 
+DeclareCAmkESComponent_UART(
+    UART
+)
+
+#ROOT SERVER
 DeclareAndCreateCamkESSystem(DemoAppTopLevel.camkes)
 GenerateSimulateScript()
