@@ -1,5 +1,5 @@
 #
-# Test Preprovisioned Keystore
+# Preprovisioned Keystore demo
 #
 # Copyright (C) 2020, Hensoldt Cyber GmbH
 #
